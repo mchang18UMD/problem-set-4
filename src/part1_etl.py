@@ -36,5 +36,16 @@ def extract_transform():
     # Creates two additional dataframes using groupbys
     charge_counts = arrest_events.groupby(['charge_degree']).size().reset_index(name='count')
     charge_counts_by_offense = arrest_events.groupby(['charge_degree', 'offense_category']).size().reset_index(name='count')
+
+    # 1. The charge_no column in arrest events tells us the charge degree and offense category for each arrest charge. 
+    # An arrest can have multiple charges. We want to know if an arrest had at least one felony charge.
+    # 
+    # Use groupby and apply with lambda to create a new dataframe called `felony_charge` that has columns: ['arrest_id', 'has_felony_charge']
     
-    return pred_universe, arrest_events, charge_counts, charge_counts_by_offense
+    felony_charge = (arrest_events.groupby('arrest_id')['charge_degree'].apply(lambda x: (x=='felony').any()).reset_index(name ='has_felony_charge'))
+
+    # 2. Merge `felony_charge` with `pre_universe` into a new dataframe
+
+    merge_df = pred_universe.merge(felony_charge, on='arrest_id',how='left')
+
+    return pred_universe, arrest_events, charge_counts, charge_counts_by_offense, felony_charge, merge_df

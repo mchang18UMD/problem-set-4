@@ -5,6 +5,9 @@ PART 4: CATEGORICAL PLOTS
 - All plots should be output as PNG files to `data/part4_plots`
 '''
 
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 ##  UPDATE `part1_etl.py`  ##
 # 1. The charge_no column in arrest events tells us the charge degree and offense category for each arrest charge. 
 # An arrest can have multiple charges. We want to know if an arrest had at least one felony charge.
@@ -21,10 +24,25 @@ PART 4: CATEGORICAL PLOTS
 ##  PLOTS  ##
 # 1. Create a catplot where the categories are charge type and the y-axis is the prediction for felony rearrest. Set kind='bar'.
 
+def catplot(merge_df):
+    g = sns.catplot(data=merge_df,x='has_felony_charge',y='prediction_felony',kind='bar')
+    g.savefig('data/part4_plots/catplot.png',bbox_inches='tight')
+    plt.close()
 
 # 2. Now repeat but have the y-axis be prediction for nonfelony rearrest
 # 
 # In a print statement, answer the following question: What might explain the difference between the plots?
+
+def catplot2(merge_df):
+    g = sns.catplot(data=merge_df,x='has_felony_charge',y='prediction_nonfelony',kind='bar')
+    g.savefig('data/part4_plots/catplot.png',bbox_inches='tight')
+    plt.close()
+
+    g.savefig('data/part4_plots/catplot2.png',bbox_inches='tight')
+    plt.close()
+
+    print('What might explain the difference between the plots?')
+    print('People with felony charges have higher predicted felony risk, while nonfelony predictions stay more similar')
 
 
 # 3. Repeat the plot from 1, but hue by whether the person actually got rearrested for a felony crime
@@ -33,3 +51,16 @@ PART 4: CATEGORICAL PLOTS
 # What does it mean that prediction for arrestees with a current felony charge, 
 # but who did not get rearrested for a felony crime have a higher predicted probability than arrestees with a current misdemeanor charge, 
 # but who did get rearrested for a felony crime?
+
+def catplot3(merge_df):
+    g = sns.catplot(data=merge_df,x='has_felony_charge',y='prediction_felony',hue='y_felony',kind='bar')
+    g.savefig('data/part4_plots/catplot.png',bbox_inches='tight')
+    plt.close()
+
+    g.savefig('data/part4_plots/catplot3.png',bbox_inches='tight')
+    plt.close()
+
+    print('What does it mean that prediction for arrestees with a current felony charge,')
+    print('but who did not get rearrested for a felony crime have a higher predicted probability than arrestees with a current misdemeanor charge,')
+    print('but who did get rearrested for a felony crime?')
+    print('It means that the model relies a lot on the current charge. This is because it gives higher predicted risk to people with felony charges even if they do not reoffend.')
